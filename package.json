@@ -1,0 +1,16 @@
+{
+  "name": "topological-sort",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape -r reify **/*.test.js"
+  },
+  "keywords": [],
+  "author": "Johnny Hauser <johnnyhauser@gmail.com>",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "reify": "^0.17.3",
+    "tape": "^4.9.1"
+  }
+}
