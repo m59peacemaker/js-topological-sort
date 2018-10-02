@@ -25,7 +25,7 @@ test('sort', t => {
   const sorted = [ ...Sort(graph) ]
 
   incomingEdgesPrecedeNode(
-    (node, pass) => t.true(pass, node),
+    (node, pass) => t.true(pass),
     graph,
     sorted
   )
@@ -33,7 +33,7 @@ test('sort', t => {
   t.end()
 })
 
-test('sort with unreachable nodes', t => {
+test('sort with dead end nodes', t => {
   const graph = [
     [ 1, [ ] ],
     [ 2, [ 1 ] ],
@@ -51,7 +51,7 @@ test('sort with unreachable nodes', t => {
   const sorted = [ ...sort ]
 
   incomingEdgesPrecedeNode(
-    (node, pass) => t.true(pass, node),
+    (node, pass) => t.true(pass),
     graph,
     sorted
   )
@@ -59,6 +59,64 @@ test('sort with unreachable nodes', t => {
   // specific order is not necessarily important beyond generally topological sort
   // it's ok if this changes in that way
   t.deepEqual(sorted, [ 1, 2, 9, 6, 10, 7 ])
+
+  t.end()
+})
+
+test('cyclic graph, basic', t => {
+  const graph = [
+    [ 1, [ ] ],
+    [ 2, [ 1 ] ]
+  ]
+  const cyclicGraph = [
+    [ 1, [ 2 ] ],
+    [ 2, [ 1 ] ]
+  ]
+
+  // sanity check
+  incomingEdgesPrecedeNode(
+    (node, pass) => t.true(pass, 'sanity check'),
+    graph,
+    [ ...Sort(graph) ]
+  )
+
+  const sort = Sort(cyclicGraph)
+
+  t.throws(() => [ ...sort ], 'cyclic graph threw error')
+
+  t.end()
+})
+
+test('cyclic graph, complex', t => {
+  const graph = [
+    [ 1, [ ] ],
+    [ 2, [ 1 ] ],
+    [ 7, [ ] ],
+    [ 5, [ ] ],
+    [ 4, [ 2, 1 ] ],
+    [ 3, [ ] ],
+    [ 6, [ 5, 2, 4 ] ]
+  ]
+  const cyclicGraph = [
+    [ 1, [ 4 ] ],
+    [ 2, [ 1 ] ],
+    [ 7, [ ] ],
+    [ 5, [ 6 ] ]
+    [ 4, [ 2, 1 ] ],
+    [ 3, [ ] ],
+    [ 6, [ 5, 2, 4 ] ]
+  ]
+
+  // sanity check
+  incomingEdgesPrecedeNode(
+    (node, pass) => t.true(pass, 'sanity check'),
+    graph,
+    [ ...Sort(graph) ]
+  )
+
+  const sort = Sort(cyclicGraph)
+
+  t.throws(() => [ ...sort ], 'cyclic graph threw error')
 
   t.end()
 })
